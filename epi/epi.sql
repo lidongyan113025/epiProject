@@ -10,11 +10,10 @@ CREATE TABLE user (
     upwd VARCHAR(100) NOT NULL COMMENT '用户密码',
     uavatar VARCHAR(300) NOT NULL DEFAULT 'img/avatar/1.jpg' COMMENT '用户头像路径',
     ugender ENUM('未知','男','女') DEFAULT '未知' COMMENT '用户性别',
-    islike ENUM('0','1') DEFAULT '0' COMMENT '用户是否加油助力',
     uphone int(11) COMMENT '用户电话号码',
     uaddress VARCHAR(100) COMMENT '用户地址'
 );
-INSERT INTO user VALUES (null,DEFAULT,'admin','admin',DEFAULT,'未知','0',null,null);
+INSERT INTO user VALUES (null,DEFAULT,'admin','admin',DEFAULT,'未知',null,null);
 -- 文章表
 CREATE TABLE article(
     aid  INT PRIMARY KEY AUTO_INCREMENT COMMENT '文章/视频ID,主键且自增',
@@ -36,17 +35,26 @@ CREATE TABLE dynamic (
     FOREIGN KEY(uid) REFERENCES user(uid)
 );
 INSERT INTO dynamic VALUES (null,'今日疫情防护打卡','img/dynamic/1.jpg','1567382190','1');
+-- 单条动态点赞的统计表
+CREATE TABLE people (
+    pid INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    dy_id INT NULL,
+    FOREIGN KEY (dy_id) REFERENCES dynamic(did)
+);
+INSERT INTO people VALUES (1,1,1);
 -- 用户捐献数据表
 CREATE TABLE donation(
     did INT PRIMARY KEY AUTO_INCREMENT COMMENT '捐赠物资id',
     dtype ENUM('医用防护','生活用品','粮油副食','其他物品') NOT NULL DEFAULT '医用防护' COMMENT '捐赠类型',
-    ddetail VARCHAR(100) NOT NULL COMMENT '捐赠详情',
+    dname VARCHAR(100) NOT NULL COMMENT '捐赠物品名称',
+    dcount INT NOT NULL COMMENT '捐赠物品数量',
     dtime BIGINT NOT NULL COMMENT '捐赠时间',
     dstate ENUM('未捐献','未提交','正在审核','待取件','运输中','已完成') DEFAULT '未捐献' COMMENT '捐赠状态',
     uid INT NOT NULL COMMENT '用户id',
     FOREIGN KEY(uid) REFERENCES user(uid)
 );
-INSERT INTO donation VALUES (null,DEFAULT,'口罩2000个','4564644646464',DEFAULT,'1');
+INSERT INTO donation VALUES (null,DEFAULT,'口罩',2000,'4564644646464',DEFAULT,'1');
 -- 区域数据表
 CREATE TABLE region_data (
     pname VARCHAR(50) NOT NULL COMMENT'省份名称',
